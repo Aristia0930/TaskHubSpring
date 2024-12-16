@@ -29,12 +29,19 @@ public class SecurityConfig {
                 .csrf().disable()
                 .authorizeHttpRequests((request) -> {
                     request.requestMatchers("/check/**").hasRole("USER");
+                    request.requestMatchers("/todo/**").hasRole("USER");
                     request.anyRequest().permitAll(); // 나머지 경로는 인증 없이 접근 가능
                 })
                 .formLogin((login) -> {
                     login.loginProcessingUrl("/login");
                     login.usernameParameter("userId");
                     login.defaultSuccessUrl("/loginOk", true);
+                })
+                .logout((logout)->{
+                    logout.logoutUrl("/logout");
+                    logout.logoutSuccessUrl("/logoutok");
+                    logout.invalidateHttpSession(true);
+                    logout.deleteCookies("JSESSIONID");
                 })
                 .exceptionHandling((exceptions) -> {
                     exceptions

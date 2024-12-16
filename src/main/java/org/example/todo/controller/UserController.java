@@ -70,9 +70,17 @@ public class UserController {
             return ResponseEntity.badRequest().build();
         }
         Map<String, String> userInfo = new HashMap<>();
+        //String id = authentication.getName();
         userInfo.put("authorities", authentication.getAuthorities().toString());
 
         return ResponseEntity.ok(userInfo);
 
+    }
+
+    @GetMapping("/logoutok")
+    public ResponseEntity<Void> logoutok() {
+
+
+        return ResponseEntity.ok().build();
     }
 }

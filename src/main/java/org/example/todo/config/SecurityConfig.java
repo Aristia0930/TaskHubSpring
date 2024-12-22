@@ -30,6 +30,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((request) -> {
                     request.requestMatchers("/check/**").hasRole("USER");
                     request.requestMatchers("/todo/**").hasRole("USER");
+                    request.requestMatchers("/message/**").hasRole("USER");
                     request.anyRequest().permitAll(); // 나머지 경로는 인증 없이 접근 가능
                 })
                 .formLogin((login) -> {

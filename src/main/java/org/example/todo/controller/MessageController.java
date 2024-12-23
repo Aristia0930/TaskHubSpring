@@ -73,4 +73,18 @@ public class MessageController {
 
     }
 
+    //보낸거 자기 자신에게서 삭제
+    @PutMapping("/remove/{id}")
+    public ResponseEntity<Void> checkRemove(@PathVariable Long id){
+
+        int rs= messageService.checkRemove(id);
+        if (rs==1){
+            return ResponseEntity.ok().build();
+
+        }else{
+            return ResponseEntity.badRequest().build();
+        }
+
+    }
+
 }

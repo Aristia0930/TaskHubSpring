@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface MessageRepository extends JpaRepository<Message,Long> {
 
-
+    Message findByMessageId(Long id);
     //받는사람
     List<Message> findByReceiverId(String id);
 
-    List<Message> findBySenderId(String id);
+    List<Message> findBySenderIdAndIsChecked(String senderId, Boolean isChecked);
 }

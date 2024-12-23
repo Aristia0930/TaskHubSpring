@@ -14,14 +14,16 @@ import java.sql.Timestamp;
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long message_id;
+    @Column(name = "message_id", nullable = false)
+    private Long messageId;
     @Column(name = "sender_id", nullable = false)
     private String senderId; // 보낸 사람 ID
 
     @Column(name = "receiver_id", nullable = false)
     private String receiverId; // 받는 사람 ID
     private String content;
-    private Boolean is_checked = false; // 확인 여부 (기본값: false)
+    @Column(name = "is_checked", nullable = false)
+    private Boolean isChecked = false; // 확인 여부 (기본값: false)
     private Timestamp sent_at = new Timestamp(System.currentTimeMillis()); // 메시지 전송 시간 (생성 시 현재 시간)
 
     @Builder

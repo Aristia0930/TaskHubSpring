@@ -21,7 +21,7 @@ public class MessageService {
     }
 
     public List<Message> myMessage(String id){
-        return messageRepository.findBySenderId(id);
+        return messageRepository.findBySenderIdAndIsChecked(id,false);
     }
 
     public int sendMessage(Message message,String id){
@@ -48,6 +48,19 @@ public class MessageService {
             messageRepository.deleteById(id);
             return 1;
         }catch (Exception e){
+            e.printStackTrace();  // 예외 처리
+            return 0;
+        }
+    }
+
+    public int checkRemove(Long id){
+        Message message=messageRepository.findByMessageId(id);
+        message.setIsChecked(true);
+        try {
+            messageRepository.save(message);
+            return 1;
+        }
+        catch (Exception e){
             e.printStackTrace();  // 예외 처리
             return 0;
         }

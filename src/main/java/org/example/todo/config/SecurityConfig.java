@@ -16,11 +16,14 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
+import org.springframework.session.web.http.CookieSerializer;
+import org.springframework.session.web.http.DefaultCookieSerializer;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.swing.plaf.PanelUI;
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -31,14 +34,13 @@ public class SecurityConfig {
     public BCryptPasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
         return http
                 .cors().configurationSource(corsConfigurationSource()) // CORS 설정 적용
                 .and()
                 .csrf().disable()
-                .addFilterBefore(new SecurityContextPersistenceFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((request) -> {
                     request.requestMatchers("/check/**").hasRole("USER");
                     request.requestMatchers("/todo/**").hasRole("USER");
@@ -64,23 +66,22 @@ public class SecurityConfig {
                                     response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden"));
                 })
                 .sessionManagement((session) -> {
-                    session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
+                    session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED); // 세션이 필요할 때만 생성
                 })
                 .securityContext((context) -> {
                     context.securityContextRepository(new HttpSessionSecurityContextRepository());
                 })
-
                 .build();
-
-
-
     }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:3000"); // React 클라이언트 주소
-        configuration.addAllowedOrigin("https://localhost:3000"); // HTTPS 주소 (필요한 경우)
-        configuration.addAllowedOrigin("https://6772552a00bb2638344f7050--takehub.netlify.app"); // Netlify 배포 주소
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:3000",
+                "https://localhost:3000",
+                "https://6772552a00bb2638344f7050--takehub.netlify.app"
+        ));
         configuration.addAllowedMethod("*"); // 모든 HTTP 메소드 허용 (GET, POST 등)
         configuration.addAllowedHeader("*"); // 모든 헤더 허용
         configuration.setAllowCredentials(true); // 쿠키와 자격 증명 허용
@@ -90,6 +91,22 @@ public class SecurityConfig {
 
         return source;
     }
+
+    @Bean
+    public CookieSerializer cookieSerializer() {
+        DefaultCookieSerializer cookieSerializer = new DefaultCookieSerializer();
+
+        // 쿠키 설정
+        cookieSerializer.setCookiePath("/"); // 쿠키 경로
+        cookieSerializer.setCookieName("SESSION"); // 쿠키 이름
+        cookieSerializer.setUseSecureCookie(true); // HTTPS에서만 쿠키 사용
+        cookieSerializer.setUseHttpOnlyCookie(true); // JavaScript에서 쿠키에 접근하지 못하게 설정
+        cookieSerializer.setSameSite("None"); // Cross-site 요청에서 쿠키가 전송되도록 설정
+
+        return cookieSerializer;
+    }
+
+
 
 //    @Bean
 //    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

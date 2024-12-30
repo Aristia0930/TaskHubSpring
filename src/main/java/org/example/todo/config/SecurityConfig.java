@@ -29,11 +29,12 @@ public class SecurityConfig {
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.addFilterBefore(new SecurityContextPersistenceFilter(), BasicAuthenticationFilter.class);
+
         return http
                 .cors()
                 .and()
                 .csrf().disable()
+                .addFilterBefore(new SecurityContextPersistenceFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((request) -> {
                     request.requestMatchers("/check/**").hasRole("USER");
                     request.requestMatchers("/todo/**").hasRole("USER");

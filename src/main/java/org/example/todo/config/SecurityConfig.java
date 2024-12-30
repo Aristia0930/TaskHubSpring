@@ -1,6 +1,8 @@
 package org.example.todo.config;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -52,6 +54,16 @@ public class SecurityConfig {
                                     response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden"));
                 })
                 .build();
+    }
+
+    @Bean
+    public ServletWebServerFactory webServerFactory() {
+        TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
+        factory.addConnectorCustomizers(connector -> {
+            connector.setProperty("server.servlet.session.cookie.sameSite", "None");  // 쿠키 SameSite 설정
+            connector.setProperty("server.servlet.session.cookie.secure", "true");  // 쿠키 보안을 위한 설정
+        });
+        return factory;
     }
 }
 

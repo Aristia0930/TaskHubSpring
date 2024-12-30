@@ -2,9 +2,9 @@ spring:
   application:
     name: todo
   datasource:
-      url: jdbc:mariadb://svc.sel4.cloudtype.app:30173/todo
+      url: jdbc:mariadb://${TAKE_HOST}:${TAKE_PORT}/todo
       username: root
-      password: 5508
+      password: ${TAKE_PW}
 #  datasource:
 #    url: jdbc:mysql://localhost:3306/todo
 #    username: todo_user

@@ -19,7 +19,7 @@ spring:
 #    driver-class-name: com.mysql.cj.jdbc.Driver  # 최신 MySQL 드라이버 사용
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl

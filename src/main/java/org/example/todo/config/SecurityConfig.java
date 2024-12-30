@@ -57,9 +57,7 @@ public class SecurityConfig {
                 })
                 .sessionManagement((session) -> {
                     session
-                            .sessionFixation().none()  // 세션 고정 보호 비활성화
-                            .maximumSessions(1)        // 최대 세션 수 설정
-                            .maxSessionsPreventsLogin(true);
+                            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) ;// 세션 설정
                 })
                 .build();
     }

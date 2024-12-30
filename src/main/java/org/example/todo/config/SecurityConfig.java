@@ -13,6 +13,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
 import javax.swing.plaf.PanelUI;
 
@@ -27,6 +29,7 @@ public class SecurityConfig {
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.addFilterBefore(new SecurityContextPersistenceFilter(), BasicAuthenticationFilter.class);
         return http
                 .cors()
                 .and()
@@ -55,7 +58,7 @@ public class SecurityConfig {
                             .accessDeniedHandler((request, response, accessDeniedException) ->
                                     response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden"));
                 })
- 
+
                 .build();
     }
 //    @Bean

@@ -5,11 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name="users")
 @NoArgsConstructor
 @Data
-public class User  {
+public class User  implements Serializable {
+    private static final long serialVersionUID = 1L; // UID 버전 추가
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userNumber;

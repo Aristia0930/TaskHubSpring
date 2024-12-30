@@ -19,7 +19,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "https://6772552a00bb2638344f7050--takehub.netlify.app" // Netlify 배포 주소
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 허용할 HTTP 메서드
-                .allowedHeaders("Authorization", "Content-Type") // 허용할 헤더
+//                .allowedHeaders("Authorization", "Content-Type") // 허용할 헤더
                 .allowCredentials(true); // 자격 증명(쿠키) 허용
     }
 

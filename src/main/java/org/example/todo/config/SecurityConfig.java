@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -24,7 +25,6 @@ public class SecurityConfig {
     public BCryptPasswordEncoder encoder() {
         return new BCryptPasswordEncoder();
     }
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
@@ -42,7 +42,7 @@ public class SecurityConfig {
                     login.usernameParameter("userId");
                     login.defaultSuccessUrl("/loginOk", true);
                 })
-                .logout((logout)->{
+                .logout((logout) -> {
                     logout.logoutUrl("/logout");
                     logout.logoutSuccessUrl("/logoutok");
                     logout.invalidateHttpSession(true);
@@ -55,8 +55,47 @@ public class SecurityConfig {
                             .accessDeniedHandler((request, response, accessDeniedException) ->
                                     response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden"));
                 })
+                .sessionManagement((session) -> {
+                    session
+                            .sessionCreationPolicy(SessionCreationPolicy.ALWAYS) // 세션 항상 생성
+                            .maximumSessions(1) // 최대 허용 세션 수 (예: 1)
+                            .maxSessionsPreventsLogin(false); // 세션 초과 시 이전 세션 무효화
+                })
                 .build();
     }
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        return http
+//                .cors()
+//                .and()
+//                .csrf().disable()
+//                .authorizeHttpRequests((request) -> {
+//                    request.requestMatchers("/check/**").hasRole("USER");
+//                    request.requestMatchers("/todo/**").hasRole("USER");
+//                    request.requestMatchers("/message/**").hasRole("USER");
+//                    request.anyRequest().permitAll(); // 나머지 경로는 인증 없이 접근 가능
+//                })
+//                .formLogin((login) -> {
+//                    login.loginProcessingUrl("/login");
+//                    login.usernameParameter("userId");
+//                    login.defaultSuccessUrl("/loginOk", true);
+//                })
+//                .logout((logout)->{
+//                    logout.logoutUrl("/logout");
+//                    logout.logoutSuccessUrl("/logoutok");
+//                    logout.invalidateHttpSession(true);
+//                    logout.deleteCookies("JSESSIONID");
+//                })
+//                .exceptionHandling((exceptions) -> {
+//                    exceptions
+//                            .authenticationEntryPoint((request, response, authException) ->
+//                                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized"))
+//                            .accessDeniedHandler((request, response, accessDeniedException) ->
+//                                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden"));
+//                })
+//
+//                .build();
+//    }
 
 //    @Bean
 //    public ServletWebServerFactory webServerFactory() {

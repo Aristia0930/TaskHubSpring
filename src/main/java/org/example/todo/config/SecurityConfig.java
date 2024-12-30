@@ -14,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
 import javax.swing.plaf.PanelUI;
@@ -62,7 +63,9 @@ public class SecurityConfig {
                 .sessionManagement((session) -> {
                     session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
                 })
-
+                .securityContext((context) -> {
+                    context.securityContextRepository(new HttpSessionSecurityContextRepository());
+                })
 
                 .build();
     }

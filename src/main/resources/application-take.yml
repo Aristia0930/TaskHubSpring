@@ -5,12 +5,12 @@ spring:
       url: jdbc:mariadb://${TAKE_HOST}:${TAKE_PORT}/todo
       username: root
       password: ${TAKE_PW}
-  session:
-    store-type: jdbc
-    jdbc:
-      # 세션 테이블 이름
-      table-name: SPRING_SESSION
-    timeout: 30m
+#  session:
+#    store-type: jdbc
+#    jdbc:
+#      # 세션 테이블 이름
+#      table-name: SPRING_SESSION
+#    timeout: 30m
 
 #  datasource:
 #    url: jdbc:mysql://localhost:3306/todo
@@ -19,7 +19,7 @@ spring:
 #    driver-class-name: com.mysql.cj.jdbc.Driver  # 최신 MySQL 드라이버 사용
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl

@@ -12,7 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Data
 public class User  implements Serializable {
-    private static final long serialVersionUID = 1L; // UID 버전 추가
+//    private static final long serialVersionUID = 1L; // UID 버전 추가
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

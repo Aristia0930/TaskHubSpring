@@ -30,6 +30,7 @@ public class SecurityConfig {
         return http
                 .cors()
                 .and()
+                .csrf().disable()
                 .authorizeHttpRequests((request) -> {
                     request.requestMatchers("/check/**").hasRole("USER");
                     request.requestMatchers("/todo/**").hasRole("USER");

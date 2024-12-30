@@ -2,10 +2,14 @@ spring:
   application:
     name: todo
   datasource:
-    url: jdbc:mysql://localhost:3306/todo
-    username: todo_user
-    password: 1234
-    driver-class-name: com.mysql.cj.jdbc.Driver  # 최신 MySQL 드라이버 사용
+      url: jdbc:mariadb://svc.sel4.cloudtype.app:30173/todo
+      username: root
+      password: 5508
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/todo
+#    username: todo_user
+#    password: 1234
+#    driver-class-name: com.mysql.cj.jdbc.Driver  # 최신 MySQL 드라이버 사용
   jpa:
     hibernate:
       ddl-auto: none

@@ -55,10 +55,7 @@ public class SecurityConfig {
                             .accessDeniedHandler((request, response, accessDeniedException) ->
                                     response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden"));
                 })
-                .sessionManagement((session) -> {
-                    session
-                            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) ;// 세션 설정
-                })
+ 
                 .build();
     }
 //    @Bean

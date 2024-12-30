@@ -58,15 +58,15 @@ public class SecurityConfig {
                 .build();
     }
 
-    @Bean
-    public ServletWebServerFactory webServerFactory() {
-        TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
-        factory.addConnectorCustomizers(connector -> {
-            connector.setProperty("server.servlet.session.cookie.sameSite", "None");  // 쿠키 SameSite 설정
-            connector.setProperty("server.servlet.session.cookie.secure", "true");  // 쿠키 보안을 위한 설정
-        });
-        return factory;
-    }
+//    @Bean
+//    public ServletWebServerFactory webServerFactory() {
+//        TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
+//        factory.addConnectorCustomizers(connector -> {
+//            connector.setProperty("server.servlet.session.cookie.sameSite", "None");  // 쿠키 SameSite 설정
+//            connector.setProperty("server.servlet.session.cookie.secure", "true");  // 쿠키 보안을 위한 설정
+//        });
+//        return factory;
+//    }
 
 
 }

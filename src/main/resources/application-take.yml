@@ -5,6 +5,7 @@ spring:
       url: jdbc:mariadb://${TAKE_HOST}:${TAKE_PORT}/todo
       username: root
       password: ${TAKE_PW}
+
 #  datasource:
 #    url: jdbc:mysql://localhost:3306/todo
 #    username: todo_user
@@ -17,3 +18,6 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
     show-sql: true
+logging:
+  level:
+    org.springframework.security: DEBUG

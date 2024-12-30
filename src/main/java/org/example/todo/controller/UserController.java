@@ -51,7 +51,10 @@ public class UserController {
     public ResponseEntity<Map<String, String>> loginOk() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String id = authentication.getName();
-        System.out.println("권한확인"+id);
+        System.out.println("Authentication Object: " + authentication);
+        System.out.println("User ID: " + authentication.getName());
+        System.out.println("Authorities: " + authentication.getAuthorities());
+
         String authorities = authentication.getAuthorities().toString();
 
         Map<String, String> userInfo = new HashMap<>();

@@ -80,10 +80,12 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000",
                 "https://localhost:3000",
+                "https://web-taskhubreact-m5al105w4c7a25c2.sel4.cloudtype.app/",
                 "https://6772552a00bb2638344f7050--takehub.netlify.app"
         ));
         configuration.addAllowedMethod("*"); // 모든 HTTP 메소드 허용 (GET, POST 등)
         configuration.addAllowedHeader("*"); // 모든 헤더 허용
+        configuration.addAllowedOriginPattern("*"); // 모든 ip의 응답을 허용
         configuration.setAllowCredentials(true); // 쿠키와 자격 증명 허용
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

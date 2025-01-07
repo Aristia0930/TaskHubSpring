@@ -42,9 +42,10 @@ public class SecurityConfig {
                 .and()
                 .csrf().disable()
                 .authorizeHttpRequests((request) -> {
-                    request.requestMatchers("/check/**").hasRole("USER");
-                    request.requestMatchers("/todo/**").hasRole("USER");
-                    request.requestMatchers("/message/**").hasRole("USER");
+                    request.requestMatchers("/check/**").hasAnyRole("USER","ADMIN");
+                    request.requestMatchers("/profile/**").hasAnyRole("USER","ADMIN");
+                    request.requestMatchers("/todo/**").hasAnyRole("USER","ADMIN");
+                    request.requestMatchers("/message/**").hasAnyRole("USER","ADMIN");
                     request.anyRequest().permitAll(); // 나머지 경로는 인증 없이 접근 가능
                 })
                 .formLogin((login) -> {
@@ -85,7 +86,6 @@ public class SecurityConfig {
         ));
         configuration.addAllowedMethod("*"); // 모든 HTTP 메소드 허용 (GET, POST 등)
         configuration.addAllowedHeader("*"); // 모든 헤더 허용
-        configuration.addAllowedOriginPattern("*"); // 모든 ip의 응답을 허용
         configuration.setAllowCredentials(true); // 쿠키와 자격 증명 허용
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

@@ -32,4 +32,12 @@ public class UserService {
        return 1; //회원가입 성공
     }
 
+
+//    //프로필데이터 받아오기
+//    public User myProfile(String userId){
+//
+//        return userRepository.findByUserIdWithProfile(userRepository.findByUserId(userId).getUserNumber());
+////        return userRepository.findByUserId(userId);
+//    }
+
 }

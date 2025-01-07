@@ -1,6 +1,9 @@
 package org.example.todo.controller;
 
+import org.example.todo.entity.CustomUserDetails;
+import org.example.todo.entity.Profile;
 import org.example.todo.entity.User;
+import org.example.todo.repository.ProfileRepository;
 import org.example.todo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,8 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.swing.plaf.PanelUI;
-import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -22,6 +23,10 @@ import java.util.Objects;
 public class UserController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ProfileRepository profileRepository;
+
 
     @GetMapping("/api/1")
     public String test(@RequestParam String text){
@@ -55,11 +60,13 @@ public class UserController {
         System.out.println("User ID: " + authentication.getName());
         System.out.println("Authorities: " + authentication.getAuthorities());
 
-        String authorities = authentication.getAuthorities().toString();
+
 
         Map<String, String> userInfo = new HashMap<>();
         userInfo.put("id", id);
-        userInfo.put("authorities", authorities);
+        CustomUserDetails customUserDetails=(CustomUserDetails)authentication.getPrincipal();
+        String role=customUserDetails.getRole();
+        userInfo.put("authorities", role);
 
         return ResponseEntity.ok(userInfo);
     }
@@ -75,7 +82,11 @@ public class UserController {
         }
         Map<String, String> userInfo = new HashMap<>();
         //String id = authentication.getName();
-        userInfo.put("authorities", authentication.getAuthorities().toString());
+
+        CustomUserDetails customUserDetails=(CustomUserDetails)authentication.getPrincipal();
+        String role=customUserDetails.getRole();
+
+        userInfo.put("authorities", role);
 
         return ResponseEntity.ok(userInfo);
 
@@ -86,5 +97,27 @@ public class UserController {
 
 
         return ResponseEntity.ok().build();
+    }
+
+
+    //유저 프로필 부분
+    @GetMapping("/profile/mydata")
+    public Map<String,String> myProfile(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String id = authentication.getName();
+        System.out.println("프로필 "+id);
+
+        Profile userProfile = profileRepository.findProfileWithUserByUserId(id); // userInfo를 기준으로 Profile 찾기
+
+        System.out.println(userProfile);
+        Map<String,String> profile=new HashMap<>();
+        profile.put("email",userProfile.getEmail());
+        profile.put("imgId",userProfile.getImgId());
+        profile.put("point",Integer.toString(userProfile.getPoint()));
+        profile.put("name",userProfile.getUser().getName());
+
+
+
+        return profile;
     }
 }

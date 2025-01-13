@@ -39,6 +39,11 @@ dependencies {
 	implementation 'org.springframework.session:spring-session-core:3.4.1'
 //	implementation 'org.springframework.session:spring-session-jdbc:3.4.1'
 
+	//email
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	implementation 'me.paulschwarz:spring-dotenv:4.0.0'
+
 }
 
 tasks.named('test') {

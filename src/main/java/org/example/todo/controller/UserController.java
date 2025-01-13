@@ -4,6 +4,7 @@ import org.example.todo.entity.CustomUserDetails;
 import org.example.todo.entity.Profile;
 import org.example.todo.entity.User;
 import org.example.todo.repository.ProfileRepository;
+import org.example.todo.service.MailService;
 import org.example.todo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,9 @@ import java.util.Objects;
 public class UserController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MailService mailService;
 
     @Autowired
     private ProfileRepository profileRepository;
@@ -81,12 +85,13 @@ public class UserController {
             return ResponseEntity.badRequest().build();
         }
         Map<String, String> userInfo = new HashMap<>();
-        //String id = authentication.getName();
-
+        String id = authentication.getName();
+        Profile userProfile = profileRepository.findProfileWithUserByUserId(id);
         CustomUserDetails customUserDetails=(CustomUserDetails)authentication.getPrincipal();
         String role=customUserDetails.getRole();
 
         userInfo.put("authorities", role);
+        userInfo.put("imgId",userProfile.getImgId());
 
         return ResponseEntity.ok(userInfo);
 
@@ -119,5 +124,12 @@ public class UserController {
 
 
         return profile;
+    }
+
+
+    //메이틀 테스트
+    @GetMapping("/1")
+    public String mailTest(){
+        return mailService.sendMail("");
     }
 }

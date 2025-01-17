@@ -156,7 +156,7 @@ public class UserController {
     }
     //수정한값들을 다시 db로 보내서 업데이트해야한다.
     @PutMapping("/profile/update")
-    public ResponseEntity<String> updateProfile(@ModelAttribute ProfileDto profileDto){
+    public ResponseEntity<String> updateProfile(@RequestBody  ProfileDto profileDto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String id = authentication.getName();
         try{

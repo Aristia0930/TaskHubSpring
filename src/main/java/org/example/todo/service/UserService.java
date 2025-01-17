@@ -1,6 +1,9 @@
 package org.example.todo.service;
 
+import org.example.todo.dto.ProfileDto;
+import org.example.todo.entity.Profile;
 import org.example.todo.entity.User;
+import org.example.todo.repository.ProfileRepository;
 import org.example.todo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -11,7 +14,8 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private ProfileRepository profileRepository;
     private BCryptPasswordEncoder pwencoder=new BCryptPasswordEncoder();
 
 
@@ -33,11 +37,22 @@ public class UserService {
     }
 
 
-//    //프로필데이터 받아오기
-//    public User myProfile(String userId){
-//
-//        return userRepository.findByUserIdWithProfile(userRepository.findByUserId(userId).getUserNumber());
-////        return userRepository.findByUserId(userId);
-//    }
+    //프로필데이터 받아오기
+    public Profile myProfile(String userId){
+
+        return profileRepository.findProfileWithUserByUserId(userId);
+
+    }
+
+    public void updateProfile(ProfileDto profileDto,String id){
+        Profile profile=profileRepository.findProfileWithUserByUserId(id);
+        User user=profile.getUser();
+
+        profile.setEmail(profileDto.getEmail());
+        profile.setImgId(profileDto.getImgId());
+        user.setName(profileDto.getName());
+        profile.setUser(user);
+        profileRepository.save(profile);
+    }
 
 }

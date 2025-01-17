@@ -1,5 +1,7 @@
 package org.example.todo.controller;
 
+import jakarta.servlet.http.HttpSession;
+import org.example.todo.dto.ProfileDto;
 import org.example.todo.entity.CustomUserDetails;
 import org.example.todo.entity.Profile;
 import org.example.todo.entity.User;
@@ -11,10 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,8 +27,7 @@ public class UserController {
     @Autowired
     private MailService mailService;
 
-    @Autowired
-    private ProfileRepository profileRepository;
+
 
 
     @GetMapping("/api/1")
@@ -86,7 +84,7 @@ public class UserController {
         }
         Map<String, String> userInfo = new HashMap<>();
         String id = authentication.getName();
-        Profile userProfile = profileRepository.findProfileWithUserByUserId(id);
+        Profile userProfile = userService.myProfile(id);
         CustomUserDetails customUserDetails=(CustomUserDetails)authentication.getPrincipal();
         String role=customUserDetails.getRole();
 
@@ -112,7 +110,7 @@ public class UserController {
         String id = authentication.getName();
         System.out.println("프로필 "+id);
 
-        Profile userProfile = profileRepository.findProfileWithUserByUserId(id); // userInfo를 기준으로 Profile 찾기
+        Profile userProfile = userService.myProfile(id); // userInfo를 기준으로 Profile 찾기
 
         System.out.println(userProfile);
         Map<String,String> profile=new HashMap<>();
@@ -123,13 +121,57 @@ public class UserController {
 
 
 
+
         return profile;
     }
 
 
-    //메이틀 테스트
-    @GetMapping("/1")
-    public String mailTest(){
-        return mailService.sendMail("");
+    //이메일 테스트
+    //리액트에서 이메일 주소 받으면
+    //여기서는 인증번호를 던져준다. POST로 받자.아니다.. 세션으로 저장해서 받아오는게 안저하지 않을까?
+    //세션 저장방식으로 하자
+    //세션은 받아온 이메일로 만들어서 확인하자.
+    @GetMapping("/profile/maile/check")
+    public ResponseEntity<?> sendMail(@RequestParam String email, HttpSession session) {
+        try {
+            mailService.sendMail(email);
+            session.setAttribute(email,mailService.getVerificationCode());
+            return ResponseEntity.ok().body("Email sent successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to send email: " + e.getMessage());
+        }
     }
+
+    @GetMapping("/profile/maile/code")
+    public ResponseEntity<?> code(@RequestParam String email, HttpSession session) {
+        String code=(String) session.getAttribute(email);
+        if(code!=null){
+            return ResponseEntity.ok().body(code);
+        }
+        else{
+            return ResponseEntity.badRequest().body("인증번호가 없습니다");
+        }
+
+    }
+    //수정한값들을 다시 db로 보내서 업데이트해야한다.
+    @PutMapping("/profile/update")
+    public ResponseEntity<String> updateProfile(@ModelAttribute ProfileDto profileDto){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String id = authentication.getName();
+        try{
+            userService.updateProfile(profileDto,id);
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+
+    }
+
+    
+
+
+
+
+
 }

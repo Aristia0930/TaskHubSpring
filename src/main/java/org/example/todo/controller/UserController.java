@@ -37,18 +37,11 @@ public class UserController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<Map<String, Object>> join(User user){
+    public ResponseEntity<String> join(User user){
         System.out.println("회원가입 진입");
 
-        int rs= userService.join(user);
+        userService.join(user);
 
-        if (rs==0){
-            Map<String, Object> response = new HashMap<>();
-            response.put("custom_code", 12);
-            response.put("message", "회원가입 실패");
-            System.out.println("회원가입실패");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
         System.out.println("성공");
         return ResponseEntity.ok().build();
 
@@ -133,14 +126,11 @@ public class UserController {
     //세션은 받아온 이메일로 만들어서 확인하자.
     @GetMapping("/profile/maile/check")
     public ResponseEntity<?> sendMail(@RequestParam String email, HttpSession session) {
-        try {
+
             mailService.sendMail(email);
             session.setAttribute(email,mailService.getVerificationCode());
             return ResponseEntity.ok().body("Email sent successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to send email: " + e.getMessage());
-        }
+
     }
 
     @GetMapping("/profile/maile/code")
@@ -159,12 +149,26 @@ public class UserController {
     public ResponseEntity<String> updateProfile(@RequestBody  ProfileDto profileDto){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String id = authentication.getName();
-        try{
-            userService.updateProfile(profileDto,id);
-            return ResponseEntity.ok().build();
-        }catch (Exception e){
-            return ResponseEntity.badRequest().build();
-        }
+
+        userService.updateProfile(profileDto,id);
+        return ResponseEntity.ok().build();
+
+
+    }
+
+    //
+    @DeleteMapping("/profile/user/delete")
+    public ResponseEntity<Void> deleteUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String id = authentication.getName();
+
+        // 유저 탈퇴 로직 만들기
+        //MYSQL에서 탈퇴한 유저 정보 30일 동안 보관하는곳 만들기.
+        userService.deleteUser(id);
+        return ResponseEntity.ok().build();
+
+
+
 
     }
 

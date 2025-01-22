@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.example.todo.exception.customexception.SendMailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.ParameterResolutionDelegate;
 import org.springframework.beans.factory.annotation.Value;
@@ -84,7 +85,7 @@ public class MailService {
             //세션으로 저장하기
 
         }catch (Exception e){
-            throw new RuntimeException("메일 전송중 오류 발생",e);
+            throw new SendMailException("메일 전송중 오류 발생",e);
         }
 
     }

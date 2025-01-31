@@ -1,6 +1,9 @@
 package org.example.todo.service;
 
 import org.example.todo.entity.Message;
+import org.example.todo.exception.customexception.DatabaseException;
+import org.example.todo.exception.customexception.MessageRemoveException;
+import org.example.todo.exception.customexception.MessageSendException;
 import org.example.todo.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -24,7 +27,7 @@ public class MessageService {
         return messageRepository.findBySenderIdAndIsChecked(id,false);
     }
 
-    public int sendMessage(Message message,String id){
+    public void sendMessage(Message message,String id){
         try {
             Message newMessage = Message.builder()
                     .sender_id(id)
@@ -32,37 +35,39 @@ public class MessageService {
                     .content(message.getContent())
                     .build();
             messageRepository.save(newMessage);
-            return 1;
+
         }
         catch (DataAccessException e) {
-            return -1;
+            throw new DatabaseException("유저아이디가 찾지 못함",e) ;
+
         }
         catch (Exception e){
-            e.printStackTrace();  // 예외 처리
-            return 0;
+           throw new MessageSendException("메세지 전송 실패",e);
+
         }
     }
 
-    public int onRemove(Long id) {
+    public void onRemove(Long id) {
         try {
             messageRepository.deleteById(id);
-            return 1;
+
         }catch (Exception e){
             e.printStackTrace();  // 예외 처리
-            return 0;
+            throw new MessageRemoveException("삭제실패",e);
+
         }
     }
 
-    public int checkRemove(Long id){
+    public void checkRemove(Long id){
         Message message=messageRepository.findByMessageId(id);
         message.setIsChecked(true);
         try {
             messageRepository.save(message);
-            return 1;
+
         }
         catch (Exception e){
             e.printStackTrace();  // 예외 처리
-            return 0;
+            throw new MessageRemoveException("삭제실패",e);
         }
     }
 }

@@ -43,13 +43,9 @@ public class TodoController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String id = authentication.getName();
 
-        int rs= todoService.onInsert(todo,id);
-        if (rs==1){
-            return ResponseEntity.ok().build();
-        }
-        else{
-            return ResponseEntity.badRequest().build();
-        }
+        todoService.onInsert(todo,id);
+
+        return ResponseEntity.ok().build();
 
 
     }
@@ -58,13 +54,9 @@ public class TodoController {
     @DeleteMapping("/remove/{id}")
     public ResponseEntity<Void> onRemove(@PathVariable Long id){
 
-        int rs= todoService.onRemove(id);
-        if (rs==1){
-            return ResponseEntity.ok().build();
+        todoService.onRemove(id);
 
-        }else{
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok().build();
 
     }
 
@@ -73,13 +65,9 @@ public class TodoController {
     public ResponseEntity<Void> onToggle(@PathVariable Long id,@RequestBody Map<String,Boolean> requestBody){
         Boolean checkValue=requestBody.get("checked");
 
-        int rs= todoService.onToggle(id,checkValue);
-        if (rs==1){
-            return ResponseEntity.ok().build();
+        todoService.onToggle(id,checkValue);
 
-        }else{
-            return ResponseEntity.badRequest().build();
-        }
+            return ResponseEntity.ok().build();
 
 
     }
@@ -88,13 +76,11 @@ public class TodoController {
     public ResponseEntity<Void> onModify(@PathVariable Long id,@RequestBody Map<String,String> requestBody){
         String text=requestBody.get("text");
 
-        int rs= todoService.onModify(id,text);
-        if (rs==1){
-            return ResponseEntity.ok().build();
+        todoService.onModify(id,text);
 
-        }else{
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok().build();
+
+
 
 
     }

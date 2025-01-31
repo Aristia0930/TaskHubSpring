@@ -1,10 +1,8 @@
 package org.example.todo.exception;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.example.todo.exception.customexception.DuplicateUserException;
-import org.example.todo.exception.customexception.ProfileNotFoundException;
-import org.example.todo.exception.customexception.ProfileUpdateException;
-import org.example.todo.exception.customexception.SendMailException;
+import org.example.todo.exception.customexception.*;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -53,8 +51,35 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<String> handleEntityNotFoundException(Exception e) {
+    public ResponseEntity<String> handleEntityNotFoundException(EntityNotFoundException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(e.getMessage());
     }
+
+
+    //todo
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<String> handleDataAccessException(DataAccessException e) {
+        return ResponseEntity.badRequest().build();
+    }
+    @ExceptionHandler(DatabaseException.class)
+    public ResponseEntity<String> handleDatabaseException(DatabaseException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("데이터베이스 오류: " + e.getMessage());
+    }
+    @ExceptionHandler(TodoDataException.class)
+    public ResponseEntity<String> handleTodoDataException(TodoDataException e) {
+        System.out.println(e.getMessage()+" "+e.getCause());
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(MessageSendException.class)
+    public ResponseEntity<String> handleMessageSendException(MessageSendException e) {
+        return ResponseEntity.badRequest().body("메시지 전송 실패: " + e.getMessage());
+    }
+
+    @ExceptionHandler(MessageRemoveException.class)
+    public ResponseEntity<String> handleMessageRemoveException(MessageRemoveException e) {
+        return ResponseEntity.badRequest().body("메시지 삭제 실패: " + e.getMessage());
+    }
+
 }

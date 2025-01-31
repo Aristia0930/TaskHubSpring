@@ -1,6 +1,8 @@
 package org.example.todo.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.example.todo.entity.Todo;
+import org.example.todo.exception.customexception.TodoDataException;
 import org.example.todo.repository.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -25,11 +27,12 @@ public class TodoService {
 
     //todo 목록 불러오기
     public List<Todo> getTodoData(String id){
+        List<Todo> todos=todoRepository.findByAuthor(id);
         return todoRepository.findByAuthor(id);
     }
 
     //입력하기
-    public int onInsert(Todo todo,String id){
+    public void onInsert(Todo todo,String id){
         try {
             Todo newTodo = Todo.builder()
                     .text(todo.getText())
@@ -40,75 +43,44 @@ public class TodoService {
 
             todoRepository.save(newTodo); // 데이터베이스에 저장
 
-            return 1; // 성공 시 1 반환
+
         } catch (DataAccessException e) {
+            e.printStackTrace();  // 예외 처리
             // 데이터베이스 관련 예외 처리
-            System.err.println("Database error occurred while saving Todo: " + e.getMessage());
-            return 0; // 실패 시 0 반환
+            throw new TodoDataException("insert오류",e);
         } catch (Exception e) {
             // 기타 예외 처리
-            System.err.println("Unexpected error occurred while saving Todo: " + e.getMessage());
-            return -1; // 기타 실패 시 -1 반환
+            e.printStackTrace();  // 예외 처리
+            throw new TodoDataException("알수 업는 오류",e);
         }
     }
-    public int onRemove(Long num){
+    public void onRemove(Long num){
         try {
             todoRepository.deleteById(num);
-            return 1;
         }catch (Exception e){
-            e.printStackTrace();  // 예외 처리
-            return 0;
+            throw new TodoDataException("todo삭제 오류",e);
         }
 
     }
 
-    public int onToggle(Long id,Boolean checked){
-        Optional<Todo> todoOptional=todoRepository.findById(id);
-        if (!todoOptional.isPresent()) {
-            return 0;
-        }
-        Todo todo = todoOptional.get();
-        Todo newTodo = Todo.builder()
-                .text(todo.getText())
-                .checked(checked)
-                .author(todo.getAuthor())
-                .created_at(todo.getCreated_at())
-                .build();
-        newTodo.setId(id);
-        newTodo.setUpdated_at(Timestamp.from(Instant.now()));
+    public void onToggle(Long id, Boolean checked) {
+        Todo todo = todoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 Todo 항목을 찾을 수 없습니다: " + id));
 
-        try {
-            todoRepository.save(newTodo);
-            return 1;
-        }catch (Exception e){
-            e.printStackTrace();  // 예외 처리
-            return -1;
-        }
+        todo.setChecked(checked);
+        todo.setUpdated_at(Timestamp.from(Instant.now()));
 
+        todoRepository.save(todo); // JPA의 변경 감지를 활용
     }
 
-    public int onModify(Long id, String text) {
+    public void onModify(Long id, String text) {
 
-        Optional<Todo> todoOptional=todoRepository.findById(id);
-        if (!todoOptional.isPresent()) {
-            return 0;
-        }
-        Todo todo = todoOptional.get();
-        Todo newTodo = Todo.builder()
-                .text(text)
-                .checked(todo.getChecked())
-                .author(todo.getAuthor())
-                .created_at(todo.getCreated_at())
-                .build();
-        newTodo.setId(id);
-        newTodo.setUpdated_at(Timestamp.from(Instant.now()));
+        Todo todo = todoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 Todo 항목을 찾을 수 없습니다: " + id));
 
-        try {
-            todoRepository.save(newTodo);
-            return 1;
-        }catch (Exception e){
-            e.printStackTrace();  // 예외 처리
-            return -1;
-        }
+        todo.setText(text);
+        todo.setUpdated_at(Timestamp.from(Instant.now()));
+
+        todoRepository.save(todo); // JPA의 변경 감지를 활용
     }
 }

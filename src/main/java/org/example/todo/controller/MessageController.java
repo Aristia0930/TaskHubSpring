@@ -45,16 +45,10 @@ public class MessageController {
     public ResponseEntity<Void> sendMessage(@RequestBody Message message){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String id = authentication.getName();
-        int rs=messageService.sendMessage(message,id);
+        messageService.sendMessage(message,id);
 
-        if (rs==1){
-            return ResponseEntity.ok().build();
-        } else if (rs==-1) {
-            return ResponseEntity.status(999).build();
 
-        } else{
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok().build();
 
 
     }
@@ -63,13 +57,11 @@ public class MessageController {
     @DeleteMapping("/remove/{id}")
     public ResponseEntity<Void> onRemove(@PathVariable Long id){
 
-        int rs= messageService.onRemove(id);
-        if (rs==1){
-            return ResponseEntity.ok().build();
+        messageService.onRemove(id);
 
-        }else{
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok().build();
+
+
 
     }
 
@@ -77,13 +69,11 @@ public class MessageController {
     @PutMapping("/remove/{id}")
     public ResponseEntity<Void> checkRemove(@PathVariable Long id){
 
-        int rs= messageService.checkRemove(id);
-        if (rs==1){
-            return ResponseEntity.ok().build();
+        messageService.checkRemove(id);
 
-        }else{
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok().build();
+
+
 
     }
 

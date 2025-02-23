@@ -46,6 +46,8 @@ public class SecurityConfig {
                     request.requestMatchers("/profile/**").hasAnyRole("USER","ADMIN");
                     request.requestMatchers("/todo/**").hasAnyRole("USER","ADMIN");
                     request.requestMatchers("/message/**").hasAnyRole("USER","ADMIN");
+                    request.requestMatchers("/admin/**").hasAnyRole("ADMIN");
+                    request.requestMatchers("/notice/user/**").hasAnyRole("USER","ADMIN");
                     request.anyRequest().permitAll(); // 나머지 경로는 인증 없이 접근 가능
                 })
                 .formLogin((login) -> {

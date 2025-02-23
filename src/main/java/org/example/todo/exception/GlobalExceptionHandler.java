@@ -82,4 +82,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body("메시지 삭제 실패: " + e.getMessage());
     }
 
+    //NoticBoad
+    @ExceptionHandler(NoticeException.class)
+    public ResponseEntity<String> handleNoticeException(NoticeException e) {
+        return ResponseEntity.badRequest().body("공지글 작성실패: " + e.getMessage());
+    }
+
 }

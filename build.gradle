@@ -34,6 +34,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security:3.3.6'
 
+	testImplementation 'org.junit.jupiter:junit-jupiter-api'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+	// Mockito 관련 의존성
+	testImplementation("org.mockito:mockito-core")
+	testImplementation("org.mockito:mockito-junit-jupiter")
+
 	// 마리아db
 //	implementation 'org.mariadb.jdbc:mariadb-java-client:3.2.0'
 	implementation 'org.springframework.session:spring-session-core:3.4.1'
@@ -43,6 +50,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
 	implementation 'me.paulschwarz:spring-dotenv:4.0.0'
+
 
 }
 

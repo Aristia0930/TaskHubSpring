@@ -1,16 +1,13 @@
 package org.example.todo.controller;
 
-import org.example.todo.dto.NoticBoardDto;
 import org.example.todo.entity.NoticeBoard;
 import org.example.todo.service.NoticeBoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/notice")
@@ -26,11 +23,21 @@ public class NoticeBoardController {
         return ResponseEntity.ok(noticeBoard);
     }
 
+    //게시글 상세
+    @GetMapping("/view/{id}")
+    public ResponseEntity<Optional<NoticeBoard>> getNotivceBoard(@PathVariable("id") Long id){
+        System.out.println(id);
+        Optional<NoticeBoard> noticeBoard=noticeBoardService.getNoticeBoard(id);
+        return ResponseEntity.ok(noticeBoard);
+    }
+
     //댓글작성
     @PostMapping("/user/comment")
     public ResponseEntity<Void> commentCreate(){
         return ResponseEntity.ok().build();
     }
+
+
 
     //댓글 수정
 
